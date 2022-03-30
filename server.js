@@ -1,6 +1,5 @@
 const express = require("express")
 const bodyParser = require("body-parser")
-const res = require("express/lib/response")
 const mongoose = require("mongoose"),
     Schema = mongoose.Schema
 
@@ -42,7 +41,7 @@ const Users = mongoose.model("Users", userSchema)
 const Rooms = mongoose.model("Rooms", roomSchema)
 const Robots = mongoose.model("Robots", robotSchema)
 
-const url = "mongodb://localhost:27017"
+const url = process.env.URL || "mongodb://localhost:27017"
 mongoose.connect(url, {
     useUnifiedTopology: true,
     useNewUrlParser: true
@@ -228,6 +227,6 @@ server.delete('/room/:room', async (req, res) => {
         })
     }
 })
-server.listen(port, () => {
+server.listen(process.env.PORT || port, () => {
     console.log(`Running server on port ${port}`)
 })
