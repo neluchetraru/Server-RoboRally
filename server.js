@@ -36,11 +36,9 @@ var robotSchema = Schema({
     collection: "Robots"
 })
 
-
 const Users = mongoose.model("Users", userSchema)
 const Rooms = mongoose.model("Rooms", roomSchema)
 const Robots = mongoose.model("Robots", robotSchema)
-
 const url = process.env.URL || "mongodb://localhost:27017"
 mongoose.connect(url, {
     useUnifiedTopology: true,
@@ -228,5 +226,5 @@ server.delete('/room/:room', async (req, res) => {
     }
 })
 server.listen(process.env.PORT || port, () => {
-    console.log(`Running server on port ${port}`)
+    console.log(`Running server on port ${process.env.PORT || port}`)
 })
