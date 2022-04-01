@@ -1,14 +1,20 @@
 # API server for RoboRally Java Game Agile course.
-| Endpoint                                   | Response | 
-| -------------------------------------------| ---------|
-| ``POST /createUser/[username]``            | Success message if user has been created, error message if user already exists. | 
-|``PUT /chooseRobot/[username]/[robot_name]``| Success message if the robot has been assigned to the user. | 
-|``POST /createRoom/[username]/[map_name]``  | Success message with code of the new rooml. | 
-|``PUT /joinRoom/[username]/[room_number]``  | Success message if the room has been assigned to the user. |
-|``GET /getRoomInfo/[room_number]``          | List of players in room *room_number*
-|``DELETE /room/[room_number]``              | Deletes room *room_number*
+| User Endpoints                                   | Description |  Response | 
+| -------------------------------------------| ---------| --- | 
+| ``POST /createUser/[username]``            | Creates a user | ``status 400`` - user already exists <br> ``status 200`` - user created successfully |
+|``PUT /chooseRobot/[username]/[robot_name]``| Assigns user a robot | ``status 404`` - user not found <br> ``status 200`` - robot chosen successfully | 
+|``PUT /joinRoom/[username]/[room_number]``  | User joins a room | ``status 404`` - user not found <br> ``status 200`` - user joins a room successfully <br> ``status 400`` - room does not exist | 
+| ``PATCH /exitRoom/[username]``| User exits a room | ``status 404`` - user not found <br> ``status 401`` - user is not currently in any room <br> ``status 200`` - user exits room => response body contains code of the room user has exited |
 
+
+| Room Endpoints | Description | Response | 
+| --- | --- |  --- |
+|``POST /createRoom/[username]/[map_name]``  | Creates a room | ``status 200`` - room created successfuly => response body contains code of the new room  <br> ``status 404`` - user not found|
+|``GET /roomInfo/[room_number]``          | List of players in a room | ``status 404`` - room not found <br>  ``status 200`` - response body contains the list of players in the room | 
+|``DELETE /deleteRoom/[room_number]``              | Deletes a room |  ``status 404`` - room not found <br> ``status 200`` - deletes the room|
 
 
 ## TODO 
-> - Player exit room
+> - Update robot position
+> - Get robot position
+

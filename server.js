@@ -67,13 +67,9 @@ server.post('/createUser/:username', async (req, res) => {
             room: undefined
         })
         Users.create(user)
-        res.status(200).send({
-            "message": "User created successfully."
-        })
+        res.status(200).send()
     } else {
-        res.status(404).send({
-            "error": "username already exists."
-        })
+        res.status(400).send()
     }
 })
 
@@ -82,9 +78,7 @@ server.put('/chooseRobot/:user/:robot_name', async (req, res) => {
         name: req.params.user
     }).exec()
     if (!user) {
-        res.status(404).send({
-            "error": "user does not exist"
-        })
+        res.status(404).send()
     } else {
         const robot = new Robots({
             name: req.params.robot_name
@@ -96,9 +90,7 @@ server.put('/chooseRobot/:user/:robot_name', async (req, res) => {
             name: user.name,
             robot: robot._id
         }).exec()
-        res.status(200).send({
-            "message": "robot created successfully"
-        })
+        res.status(200).send()
     }
 })
 
@@ -126,7 +118,6 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
             })
             Rooms.create(newRoom)
             res.status(200).send({
-                "message": "Room created successfully.",
                 code: code
             })
 
@@ -139,15 +130,12 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
             })
             Rooms.create(newRoom)
             res.status(200).send({
-                "message": "Room created successfully.",
                 code: code
             })
         }
 
     } else {
-        res.status(400).send({
-            "error": "user does not exist"
-        })
+        res.status(404).send()
     }
 
 })
@@ -157,9 +145,7 @@ server.put('/joinRoom/:user/:room', async (req, res) => {
         name: req.params.user
     }).exec()
     if (!user) {
-        res.status(400).send({
-            "error": "user does not exist"
-        })
+        res.status(404).send()
     } else {
         const room = await Rooms.findOne({
             code: req.params.room
@@ -170,19 +156,15 @@ server.put('/joinRoom/:user/:room', async (req, res) => {
             }, {
                 room: room._id
             }).exec()
-            res.status(200).send({
-                "message": "user has joined the defined room"
-            })
+            res.status(200).send()
         } else {
-            res.status(400).send({
-                "message": "room not found"
-            })
+            res.status(400).send()
         }
     }
 })
 
 
-server.get('/getRoomInfo/:room', async (req, res) => {
+server.get('/roomInfo/:room', async (req, res) => {
     const room = await Rooms.findOne({
         code: req.params.room
     }).exec()
@@ -195,13 +177,11 @@ server.get('/getRoomInfo/:room', async (req, res) => {
         })
         res.status(200).send(users)
     } else {
-        res.status(400).send({
-            "error": "room not found"
-        })
+        res.status(404).send()
     }
 })
 
-server.delete('/room/:room', async (req, res) => {
+server.delete('/deleteRoom/:room', async (req, res) => {
     const room = await Rooms.findOne({
         code: req.params.room
     }).exec()
@@ -210,19 +190,43 @@ server.delete('/room/:room', async (req, res) => {
             room: room._id
         }], [{
             "$set": {
-                room: undefined
+                room: null
             }
         }]).exec()
         await Rooms.deleteMany({
             code: req.params.room
         }).exec()
-        res.status(200).send({
-            "message": "room has been deleted"
-        })
+        res.status(200).send()
     } else {
-        res.status(400).send({
-            "error": "room does not exist"
-        })
+        res.status(404).send()
+    }
+})
+
+
+server.patch('/exitRoom/:user', async (req, res) => {
+    const user = await Users.findOne({
+        name: req.params.user
+    }).exec()
+    if (user) {
+        if (user.room) {
+            const room = await Rooms.findOne({
+                _id: user.room
+            }).exec()
+            await Users.updateOne({
+                name: req.params.user
+            }, {
+                $set: {
+                    room: null
+                }
+            }).exec()
+            res.status(200).send({
+                "code": room.code
+            })
+        } else {
+            res.status(401).send()
+        }
+    } else {
+        res.status(404).send()
     }
 })
 server.listen(process.env.PORT || port, () => {
