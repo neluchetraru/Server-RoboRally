@@ -23,7 +23,8 @@ var roomSchema = Schema({
     owner: {
         type: Schema.Types.ObjectId,
         ref: "Users"
-    }
+    },
+    timeCreated: Date,
 }, {
     collection: "Rooms"
 })
@@ -35,6 +36,7 @@ var robotSchema = Schema({
 }, {
     collection: "Robots"
 })
+
 
 const Users = mongoose.model("Users", userSchema)
 const Rooms = mongoose.model("Rooms", roomSchema)
@@ -108,13 +110,17 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
         }).sort({
             _id: -1
         }).limit(1).exec()
+
+        const date = new Date()
         if (last_room.length != 0) {
 
             code = last_room[0].code + Math.floor(Math.random() * 100)
             const newRoom = new Rooms({
                 code: code,
                 map: req.params.map,
-                owner: user._id
+                owner: user._id,
+                // current timestamp
+                timeCreated: date.getTime()
             })
             Rooms.create(newRoom)
             res.status(200).send({
@@ -126,7 +132,8 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
             const newRoom = new Rooms({
                 code: code,
                 map: req.params.map,
-                owner: user._id
+                owner: user._id,
+                timeCreated: date.getTime()
             })
             Rooms.create(newRoom)
             res.status(200).send({
@@ -175,7 +182,10 @@ server.get('/roomInfo/:room', async (req, res) => {
         const users = temp.map((user) => {
             return user.name
         })
-        res.status(200).send(users)
+        res.status(200).send([{
+            "timeCreated": room.timeCreated,
+            "users": users
+        }])
     } else {
         res.status(404).send()
     }
@@ -203,7 +213,7 @@ server.delete('/deleteRoom/:room', async (req, res) => {
 })
 
 
-server.patch('/exitRoom/:user', async (req, res) => {
+server.put('/exitRoom/:user', async (req, res) => {
     const user = await Users.findOne({
         name: req.params.user
     }).exec()
@@ -229,6 +239,56 @@ server.patch('/exitRoom/:user', async (req, res) => {
         res.status(404).send()
     }
 })
+
+
+// update robot position 
+server.put('/updateRobotPosition/:user/:x/:y', async (req, res) => {
+    const user = await Users.findOne({
+        name: req.params.user
+    }).exec()
+    if (user) {
+        if (user.robot) {
+            await Robots.updateOne({
+                _id: user.robot
+            }, {
+                $set: {
+                    x: req.params.x,
+                    y: req.params.y
+                }
+            }).exec()
+            res.status(200).send()
+        } else {
+            res.status(401).send()
+        }
+    } else {
+        res.status(404).send()
+    }
+
+})
+
+// get robot position
+server.get('/getRobotPosition/:user', async (req, res) => {
+    const user = await Users.findOne({
+        name: req.params.user
+    }).exec()
+    if (user) {
+        if (user.robot) {
+            const robot = await Robots.findOne({
+                _id: user.robot
+            }).exec()
+            res.status(200).send({
+                "x": robot.x,
+                "y": robot.y
+            })
+        } else {
+            res.status(401).send()
+        }
+    } else {
+        res.status(404).send()
+    }
+})
+
+
 server.listen(process.env.PORT || port, () => {
     console.log(`Running server on port ${process.env.PORT || port}`)
 })
