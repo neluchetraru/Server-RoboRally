@@ -275,8 +275,8 @@ server.put('/updateRobotPosition/:user/:x/:y', async (req, res) => {
 
 })
 
-// get robot position
-server.get('/getRobotPosition/:user', async (req, res) => {
+// get robot information
+server.get('/getRobotInfo/:user', async (req, res) => {
     const user = await Users.findOne({
         name: req.params.user
     }).exec()
@@ -287,7 +287,8 @@ server.get('/getRobotPosition/:user', async (req, res) => {
             }).exec()
             res.status(200).send({
                 "x": robot.position.x,
-                "y": robot.position.y
+                "y": robot.position.y,
+                "direction": robot.direction
             })
         } else {
             res.status(401).send()

@@ -18,4 +18,4 @@
 | --- | --- | ---|
 | ``PUT /updateRobotPosition/[username]/[pos_x]/[pos_y]`` | Updates robot position | ``status 200`` - robot position has been updated <br> ``status 404`` - user not found <br> ``status 401`` - user does not have any robot | 
 | ``PUT /updateRobotDirection/[user]/[direction]`` | Updates robot direction | ``status 200`` - robot direction has been updated <br> ``status 404`` - user not found <br> ``status 401`` - user does not have any robot | 
-| ``GET /getRobotPosition/[username]`` | Get coordinates of users's robot | ``status 200`` - response body contains coordinates x and y <br> ``status 401`` - user does not have any robot <br> ``status 404`` - user not found |
+| ``GET /getRobotInfo/[username]`` | Get coordinates of users's robot | ``status 200`` - response body contains coordinates x, y and direction of the robot<br> ``status 401`` - user does not have any robot <br> ``status 404`` - user not found |
