@@ -9,12 +9,13 @@
 
 | Room Endpoints | Description | Response | 
 | --- | --- |  --- |
-|``POST /createRoom/[username]/[map_name]``  | Creates a room | ``status 200`` - room created successfuly => response body contains code of the new room  <br> ``status 404`` - user not found|
-|``GET /roomInfo/[room_number]``          | List of players in a room | ``status 404`` - room not found <br>  ``status 200`` - response body contains the list of players in the room | 
+|``POST /createRoom/[username]/[map_name]``  | Creates a room | ``status 200`` - room created successfuly => response body contains code of the new room <br> ``status 404`` - user not found|
+|``GET /roomInfo/[room_number]``          | List of players in a room | ``status 404`` - room not found <br>  ``status 200`` - response body contains the list of players in the room and the time room was created | 
 |``DELETE /deleteRoom/[room_number]``              | Deletes a room |  ``status 404`` - room not found <br> ``status 200`` - deletes the room|
 
 
 | Robot Endpoints | Description | Response | 
 | --- | --- | ---|
 | ``PUT /updateRobotPosition/[username]/[pos_x]/[pos_y]`` | Updates robot position | ``status 200`` - robot position has been updated <br> ``status 404`` - user not found <br> ``status 401`` - user does not have any robot | 
+| ``PUT /updateRobotDirection/[user]/[direction]`` | Updates robot direction | ``status 200`` - robot direction has been updated <br> ``status 404`` - user not found <br> ``status 401`` - user does not have any robot | 
 | ``GET /getRobotPosition/[username]`` | Get coordinates of users's robot | ``status 200`` - response body contains coordinates x and y <br> ``status 401`` - user does not have any robot <br> ``status 404`` - user not found |

@@ -32,6 +32,13 @@ var roomSchema = Schema({
 var robotSchema = Schema({
     name: {
         type: String
+    },
+    position: {
+        x: Number,
+        y: Number
+    },
+    direction: {
+        type: String
     }
 }, {
     collection: "Robots"
@@ -252,8 +259,10 @@ server.put('/updateRobotPosition/:user/:x/:y', async (req, res) => {
                 _id: user.robot
             }, {
                 $set: {
-                    x: req.params.x,
-                    y: req.params.y
+                    position: {
+                        x: req.params.x,
+                        y: req.params.y
+                    }
                 }
             }).exec()
             res.status(200).send()
@@ -277,8 +286,8 @@ server.get('/getRobotPosition/:user', async (req, res) => {
                 _id: user.robot
             }).exec()
             res.status(200).send({
-                "x": robot.x,
-                "y": robot.y
+                "x": robot.position.x,
+                "y": robot.position.y
             })
         } else {
             res.status(401).send()
@@ -287,6 +296,31 @@ server.get('/getRobotPosition/:user', async (req, res) => {
         res.status(404).send()
     }
 })
+
+// update robot direction
+server.put('/updateRobotDirection/:user/:direction', async (req, res) => {
+    const user = await Users.findOne({
+        name: req.params.user
+    }).exec()
+    if (user) {
+        if (user.robot) {
+            await Robots.updateOne({
+                _id: user.robot
+            }, {
+                $set: {
+                    direction: req.params.direction
+                }
+            }).exec()
+            res.status(200).send()
+        } else {
+            res.status(401).send()
+        }
+    } else {
+        res.status(404).send()
+    }
+})
+
+
 
 
 server.listen(process.env.PORT || port, () => {
