@@ -189,10 +189,10 @@ server.get('/roomInfo/:room', async (req, res) => {
         const users = temp.map((user) => {
             return user.name
         })
-        res.status(200).send([{
+        res.status(200).send({
             "timeCreated": room.timeCreated,
             "users": users
-        }])
+        })
     } else {
         res.status(404).send()
     }
