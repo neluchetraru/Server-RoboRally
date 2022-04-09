@@ -1,7 +1,8 @@
 const express = require("express")
-const bodyParser = require("body-parser")
 const mongoose = require("mongoose"),
     Schema = mongoose.Schema
+
+var bodyParser = require('body-parser')
 
 var userSchema = Schema({
     name: String,
@@ -45,9 +46,28 @@ var robotSchema = Schema({
 })
 
 
+var programmingRecordSchema = Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "Users"
+    },
+    room: {
+        type: Schema.Types.ObjectId,
+        ref: "Rooms"
+    },
+    // register is a list of all the registers
+    register1: String,
+    register2: String,
+    register3: String,
+    register4: String,
+    register5: String,
+    round: Number
+})
+
 const Users = mongoose.model("Users", userSchema)
 const Rooms = mongoose.model("Rooms", roomSchema)
 const Robots = mongoose.model("Robots", robotSchema)
+const ProgrammingRecords = mongoose.model("ProgrammingRecords", programmingRecordSchema)
 const url = process.env.URL || "mongodb://localhost:27017"
 mongoose.connect(url, {
     useUnifiedTopology: true,
@@ -61,6 +81,9 @@ connection.once("open", function () {
 
 const server = express()
 server.use(bodyParser.json())
+server.use(bodyParser.urlencoded({
+    extended: true
+}))
 const port = 3000
 
 
@@ -213,6 +236,9 @@ server.delete('/deleteRoom/:room', async (req, res) => {
         await Rooms.deleteMany({
             code: req.params.room
         }).exec()
+        await ProgrammingRecords.deleteMany({
+            room: room._id
+        }).exec()
         res.status(200).send()
     } else {
         res.status(404).send()
@@ -235,6 +261,10 @@ server.put('/exitRoom/:user', async (req, res) => {
                 $set: {
                     room: null
                 }
+            }).exec()
+            await ProgrammingRecords.deleteMany({
+                user: user._id,
+                room: room._id
             }).exec()
             res.status(200).send({
                 "code": room.code
@@ -272,8 +302,8 @@ server.put('/updateRobotPosition/:user/:x/:y', async (req, res) => {
     } else {
         res.status(404).send()
     }
-
 })
+
 
 // get robot information
 server.get('/getRobotInfo/:user', async (req, res) => {
@@ -316,6 +346,68 @@ server.put('/updateRobotDirection/:user/:direction', async (req, res) => {
         } else {
             res.status(401).send()
         }
+    } else {
+        res.status(404).send()
+    }
+})
+
+
+// Programming record 
+// POST /createProgrammingRecord 
+server.post('/createProgrammingRecord', async (req, res) => {
+    const user = await Users.findOne({
+        name: req.body.username
+    }).exec()
+
+    const room = await Rooms.findOne({
+        code: req.body.roomNumber
+    }).exec()
+    if (user) {
+        if (room) {
+            if (user.room) {
+                const newRecord = new ProgrammingRecords({
+                    user: user._id,
+                    room: room._id,
+                    round: req.body.round,
+                    register1: req.body.register1,
+                    register2: req.body.register2,
+                    register3: req.body.register3,
+                    register4: req.body.register4,
+                    register5: req.body.register5
+                })
+                ProgrammingRecords.create(newRecord)
+                res.status(200).send()
+            } else {
+                res.status(402).send()
+            }
+        } else {
+            res.status(401).send()
+        }
+    } else {
+        res.status(400).send()
+    }
+})
+
+// GET /getProgrammingRecords/:roomNumber/:round
+server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
+    const room = await Rooms.findOne({
+        code: req.params.roomNumber
+    }).exec()
+    if (room) {
+        const users = new Set()
+        const records = await ProgrammingRecords.find({
+            room: room._id,
+            round: req.params.round
+        }).exec()
+        for (let i = 0; i < records.length; i++) {
+            users.add((await Users.findOne({
+                _id: records[i].user
+                }).exec()).name)
+        }
+        const usersArray = Array.from(users)
+        
+        
+        res.status(200).send(usersArray)
     } else {
         res.status(404).send()
     }
