@@ -40,6 +40,10 @@ var robotSchema = Schema({
     },
     direction: {
         type: String
+    },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "Users"
     }
 }, {
     collection: "Robots"
@@ -62,6 +66,8 @@ var programmingRecordSchema = Schema({
     register4: String,
     register5: String,
     round: Number
+}, {
+    collection: "ProgrammingRecords"
 })
 
 const Users = mongoose.model("Users", userSchema)
@@ -105,26 +111,97 @@ server.post('/createUser/:username', async (req, res) => {
     }
 })
 
+
+server.delete('/deleteUser/:username', async (req, res) => {
+    const users = await Users.find({
+        name: req.params.username
+    }).exec()
+    if (users.length == 1) {
+        await Users.deleteOne({
+            name: req.params.username
+        }).exec()
+        await Robots.deleteOne({
+            owner: users[0]._id
+        }).exec()
+        await ProgrammingRecords.deleteMany({
+            user: users[0]._id
+        }).exec()
+
+
+        res.status(200).send() // user deleted
+    } else {
+        res.status(404).send() // user not found
+    }
+})
+
 server.put('/chooseRobot/:user/:robot_name', async (req, res) => {
     const user = await Users.findOne({
         name: req.params.user
     }).exec()
+
+    if (user) {
+        const anyRobot = await Robots.findOne({
+            name: req.params.robot_name
+        }).exec()
+        if (!anyRobot) {
+            if (user.robot) {
+                await Robots.updateOne({
+                    _id: user.robot
+                }, {
+                    $set: {
+                        name: req.params.robot_name
+                    }
+                }).exec()
+
+            } else {
+                const robot = new Robots({
+                    name: req.params.robot_name,
+                    owner: user._id
+                })
+                Robots.create(robot)
+                await Users.updateOne({
+                    name: user.name
+                }, {
+                    name: user.name,
+                    robot: robot._id
+                }).exec()
+            }
+            res.status(200).send()
+        } else {
+            res.status(400).send() // robot name already exists
+        }
+    } else {
+        res.status(404).send()
+
+    }
+
+})
+
+server.delete("/deleteRobot/:username", async (req, res) => {
+    const user = await Users.findOne({
+        name: req.params.username
+    }).exec()
     if (!user) {
         res.status(404).send()
     } else {
-        const robot = new Robots({
-            name: req.params.robot_name
-        })
-        Robots.create(robot)
-        await Users.updateOne({
-            name: user.name
-        }, {
-            name: user.name,
-            robot: robot._id
-        }).exec()
-        res.status(200).send()
+        if (user.robot) {
+            await Users.updateOne({
+                name: user.name
+            }, {
+                $set: {
+                    robot: null
+                }
+            }).exec()
+            await Robots.deleteOne({
+                _id: user.robot
+            }).exec()
+            res.status(200).send()
+        } else {
+            res.status(400).send() // robot not found
+        }
     }
 })
+
 
 server.post('/createRoom/:owner/:map', async (req, res) => {
 
@@ -316,6 +393,7 @@ server.get('/getRobotInfo/:user', async (req, res) => {
                 _id: user.robot
             }).exec()
             res.status(200).send({
+                "name": robot.name,
                 "x": robot.position.x,
                 "y": robot.position.y,
                 "direction": robot.direction
@@ -402,11 +480,11 @@ server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
         for (let i = 0; i < records.length; i++) {
             users.add((await Users.findOne({
                 _id: records[i].user
-                }).exec()).name)
+            }).exec()).name)
         }
         const usersArray = Array.from(users)
-        
-        
+
+
         res.status(200).send(usersArray)
     } else {
         res.status(404).send()
