@@ -1,0 +1,374 @@
+{
+	"info": {
+		"_postman_id": "a4cad499-d5fe-45ad-b032-720520bf612f",
+		"name": "Test API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/createUser/anna",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"createUser",
+								"anna"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Choose Robot",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/chooseRobot/ion/robot2",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"chooseRobot",
+								"ion",
+								"robot2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Join Room",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/joinRoom/ion/100",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"joinRoom",
+								"ion",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exit Room",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/exitRoom/ion",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"exitRoom",
+								"ion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/deleteUser/ion",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"deleteUser",
+								"ion"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Room",
+			"item": [
+				{
+					"name": "Create Room",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/createRoom/ion/map1",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"createRoom",
+								"ion",
+								"map1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Room Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/roomInfo/100",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"roomInfo",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Room",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/deleteRoom/111",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"deleteRoom",
+								"111"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Robot",
+			"item": [
+				{
+					"name": "Update Robot Position",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/updateRobotPosition/test/1/1",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"updateRobotPosition",
+								"test",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Robot Direction",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/updateRobotDirection/ion/North",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"updateRobotDirection",
+								"ion",
+								"North"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Robot Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/getRobotInfo/ion",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"getRobotInfo",
+								"ion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Robot",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/deleteRobot/ion",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"deleteRobot",
+								"ion"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ProgrammingRecord",
+			"item": [
+				{
+					"name": "Create Programming Record",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "ion",
+									"type": "text"
+								},
+								{
+									"key": "roomNumber",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "round",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "register1",
+									"value": "Move1",
+									"type": "text"
+								},
+								{
+									"key": "register2",
+									"value": "Move2",
+									"type": "text"
+								},
+								{
+									"key": "register3",
+									"value": "Move3",
+									"type": "text"
+								},
+								{
+									"key": "register4",
+									"value": "TurnLeft",
+									"type": "text"
+								},
+								{
+									"key": "register5",
+									"value": "TurnRight",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/createProgrammingRecord",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"createProgrammingRecord"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Record",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://dry-brushlands-54922.herokuapp.com/getProgrammingRecords/100/1",
+							"protocol": "https",
+							"host": [
+								"dry-brushlands-54922",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"getProgrammingRecords",
+								"100",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
