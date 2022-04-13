@@ -19,7 +19,7 @@ var userSchema = Schema({
 })
 
 var roomSchema = Schema({
-    code: Number,
+    room_numnber: Number,
     map: String,
     owner: {
         type: Schema.Types.ObjectId,
@@ -140,36 +140,30 @@ server.put('/chooseRobot/:user/:robot_name', async (req, res) => {
     }).exec()
 
     if (user) {
-        const anyRobot = await Robots.findOne({
-            name: req.params.robot_name
-        }).exec()
-        if (!anyRobot) {
-            if (user.robot) {
-                await Robots.updateOne({
-                    _id: user.robot
-                }, {
-                    $set: {
-                        name: req.params.robot_name
-                    }
-                }).exec()
+        if (user.robot) {
+            await Robots.updateOne({
+                _id: user.robot
+            }, {
+                $set: {
+                    name: req.params.robot_name
+                }
+            }).exec()
 
-            } else {
-                const robot = new Robots({
-                    name: req.params.robot_name,
-                    owner: user._id
-                })
-                Robots.create(robot)
-                await Users.updateOne({
-                    name: user.name
-                }, {
-                    name: user.name,
-                    robot: robot._id
-                }).exec()
-            }
-            res.status(200).send()
         } else {
-            res.status(400).send() // robot name already exists
+            const robot = new Robots({
+                name: req.params.robot_name,
+                owner: user._id
+            })
+            Robots.create(robot)
+            await Users.updateOne({
+                name: user.name
+            }, {
+                name: user.name,
+                robot: robot._id
+            }).exec()
         }
+        res.status(200).send()
+
     } else {
         res.status(404).send()
 
@@ -211,7 +205,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
 
     if (user) {
         var last_room = await Rooms.find({
-            code: {
+            room_numnber: {
                 $gte: 0
             }
         }).sort({
@@ -221,31 +215,58 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
         const date = new Date()
         if (last_room.length != 0) {
 
-            code = last_room[0].code + Math.floor(Math.random() * 100)
+            room_numnber = last_room[0].room_numnber + Math.floor(Math.random() * 100)
             const newRoom = new Rooms({
-                code: code,
+                room_numnber: room_numnber,
                 map: req.params.map,
                 owner: user._id,
                 // current timestamp
                 timeCreated: date.getTime()
             })
-            Rooms.create(newRoom)
-            res.status(200).send({
-                code: code
-            })
+            // add user to room
+            if (!user.room) {
+                await Users.updateOne({
+                    name: user.name
+                }, {
+                    $set: {
+                        room: newRoom._id
+                    }
+                }).exec()
+                Rooms.create(newRoom)
+                res.status(200).send({
+                    room_numnber: room_numnber
+                })
+            } else {
+                res.status(400).send() // user already in a room
+            }
+
+
 
         } else {
-            code = 100
+            room_numnber = 100
             const newRoom = new Rooms({
-                code: code,
+                room_numnber: room_numnber,
                 map: req.params.map,
                 owner: user._id,
                 timeCreated: date.getTime()
             })
+
             Rooms.create(newRoom)
-            res.status(200).send({
-                code: code
-            })
+            if (user.room) {
+                await Users.updateOne({
+                    name: user.name
+                }, {
+                    $set: {
+                        room: newRoom._id
+                    }
+                }).exec()
+                res.status(200).send({
+                    room_numnber: room_numnber
+                })
+            } else {
+                res.status(400).send() // user already in a room
+            }
+
         }
 
     } else {
@@ -262,7 +283,7 @@ server.put('/joinRoom/:user/:room', async (req, res) => {
         res.status(404).send()
     } else {
         const room = await Rooms.findOne({
-            code: req.params.room
+            room_numnber: req.params.room
         }).exec()
         if (room) {
             Users.updateOne({
@@ -280,7 +301,7 @@ server.put('/joinRoom/:user/:room', async (req, res) => {
 
 server.get('/roomInfo/:room', async (req, res) => {
     const room = await Rooms.findOne({
-        code: req.params.room
+        room_numnber: req.params.room
     }).exec()
     if (room) {
         const temp = await Users.find({
@@ -289,8 +310,10 @@ server.get('/roomInfo/:room', async (req, res) => {
         const users = temp.map((user) => {
             return user.name
         })
+        const room_owner = await Users.findById(room.owner).exec()
         res.status(200).send({
             "timeCreated": room.timeCreated,
+            "owner": room_owner.name,
             "users": users
         })
     } else {
@@ -300,7 +323,7 @@ server.get('/roomInfo/:room', async (req, res) => {
 
 server.delete('/deleteRoom/:room', async (req, res) => {
     const room = await Rooms.findOne({
-        code: req.params.room
+        room_numnber: req.params.room
     }).exec()
     if (room) {
         await Users.updateMany([{
@@ -311,7 +334,7 @@ server.delete('/deleteRoom/:room', async (req, res) => {
             }
         }]).exec()
         await Rooms.deleteMany({
-            code: req.params.room
+            room_numnber: req.params.room
         }).exec()
         await ProgrammingRecords.deleteMany({
             room: room._id
@@ -344,7 +367,7 @@ server.put('/exitRoom/:user', async (req, res) => {
                 room: room._id
             }).exec()
             res.status(200).send({
-                "code": room.code
+                "room_numnber": room.room_numnber
             })
         } else {
             res.status(401).send()
@@ -438,7 +461,7 @@ server.post('/createProgrammingRecord', async (req, res) => {
     }).exec()
 
     const room = await Rooms.findOne({
-        code: req.body.roomNumber
+        room_numnber: req.body.roomNumber
     }).exec()
     if (user) {
         if (room) {
@@ -469,7 +492,7 @@ server.post('/createProgrammingRecord', async (req, res) => {
 // GET /getProgrammingRecords/:roomNumber/:round
 server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
     const room = await Rooms.findOne({
-        code: req.params.roomNumber
+        room_numnber: req.params.roomNumber
     }).exec()
     if (room) {
         const users = new Set()
