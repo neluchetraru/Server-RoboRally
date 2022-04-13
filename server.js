@@ -19,7 +19,7 @@ var userSchema = Schema({
 })
 
 var roomSchema = Schema({
-    room_numnber: Number,
+    room_number: Number,
     map: String,
     owner: {
         type: Schema.Types.ObjectId,
@@ -205,7 +205,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
 
     if (user) {
         var last_room = await Rooms.find({
-            room_numnber: {
+            room_number: {
                 $gte: 0
             }
         }).sort({
@@ -215,9 +215,9 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
         const date = new Date()
         if (last_room.length != 0) {
 
-            room_numnber = last_room[0].room_numnber + Math.floor(Math.random() * 100)
+            room_number = last_room[0].room_number + Math.floor(Math.random() * 100)
             const newRoom = new Rooms({
-                room_numnber: room_numnber,
+                room_number: room_number,
                 map: req.params.map,
                 owner: user._id,
                 // current timestamp
@@ -234,7 +234,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
                 }).exec()
                 Rooms.create(newRoom)
                 res.status(200).send({
-                    room_numnber: room_numnber
+                    room_number: room_number
                 })
             } else {
                 res.status(400).send() // user already in a room
@@ -243,9 +243,9 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
 
 
         } else {
-            room_numnber = 100
+            room_number = 100
             const newRoom = new Rooms({
-                room_numnber: room_numnber,
+                room_number: room_number,
                 map: req.params.map,
                 owner: user._id,
                 timeCreated: date.getTime()
@@ -261,7 +261,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
                     }
                 }).exec()
                 res.status(200).send({
-                    room_numnber: room_numnber
+                    room_number: room_number
                 })
             } else {
                 res.status(400).send() // user already in a room
@@ -283,7 +283,7 @@ server.put('/joinRoom/:user/:room', async (req, res) => {
         res.status(404).send()
     } else {
         const room = await Rooms.findOne({
-            room_numnber: req.params.room
+            room_number: req.params.room
         }).exec()
         if (room) {
             Users.updateOne({
@@ -301,7 +301,7 @@ server.put('/joinRoom/:user/:room', async (req, res) => {
 
 server.get('/roomInfo/:room', async (req, res) => {
     const room = await Rooms.findOne({
-        room_numnber: req.params.room
+        room_number: req.params.room
     }).exec()
     if (room) {
         const temp = await Users.find({
@@ -323,7 +323,7 @@ server.get('/roomInfo/:room', async (req, res) => {
 
 server.delete('/deleteRoom/:room', async (req, res) => {
     const room = await Rooms.findOne({
-        room_numnber: req.params.room
+        room_number: req.params.room
     }).exec()
     if (room) {
         await Users.updateMany([{
@@ -334,7 +334,7 @@ server.delete('/deleteRoom/:room', async (req, res) => {
             }
         }]).exec()
         await Rooms.deleteMany({
-            room_numnber: req.params.room
+            room_number: req.params.room
         }).exec()
         await ProgrammingRecords.deleteMany({
             room: room._id
@@ -367,7 +367,7 @@ server.put('/exitRoom/:user', async (req, res) => {
                 room: room._id
             }).exec()
             res.status(200).send({
-                "room_numnber": room.room_numnber
+                "room_number": room.room_number
             })
         } else {
             res.status(401).send()
@@ -461,7 +461,7 @@ server.post('/createProgrammingRecord', async (req, res) => {
     }).exec()
 
     const room = await Rooms.findOne({
-        room_numnber: req.body.roomNumber
+        room_number: req.body.roomNumber
     }).exec()
     if (user) {
         if (room) {
@@ -492,7 +492,7 @@ server.post('/createProgrammingRecord', async (req, res) => {
 // GET /getProgrammingRecords/:roomNumber/:round
 server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
     const room = await Rooms.findOne({
-        room_numnber: req.params.roomNumber
+        room_number: req.params.roomNumber
     }).exec()
     if (room) {
         const users = new Set()
