@@ -11,7 +11,7 @@
 | Room Endpoints | Description | Response | 
 | --- | --- |  --- |
 |``POST /createRoom/[username]/[map_name]``  | Creates a room | ``status 200`` - room created successfuly => response body contains code of the new room <br> ``status 404`` - user not found <br>``status 400`` -  User already in a room |
-|``GET /roomInfo/[room_number]``          | List of players in a room | ``status 404`` - room not found <br>  ``status 200`` - response body contains the list of players in the room, the time room was created and the time the request was made| 
+|``GET /roomInfo/[room_number]``          | List of players in a room | ``status 404`` - room not found <br> ``status 401`` - room owner not found <br> ``status 200`` - response body contains the list of players in the room, the time room was created and the time the request was made| 
 |``DELETE /deleteRoom/[room_number]``              | Deletes a room |  ``status 404`` - room not found <br> ``status 200`` - deletes the room|
 
 
