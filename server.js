@@ -212,7 +212,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
             _id: -1
         }).limit(1).exec()
 
-        const date = new Date()
+       
         if (last_room.length != 0) {
 
             room_number = last_room[0].room_number + Math.floor(Math.random() * 100)
@@ -221,7 +221,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
                 map: req.params.map,
                 owner: user._id,
                 // current timestamp
-                timeCreated: date.getTime()
+                timeCreated:  (new Date()).getTime()
             })
             // add user to room
             if (!user.room) {
@@ -300,6 +300,7 @@ server.put('/joinRoom/:user/:room', async (req, res) => {
 
 
 server.get('/roomInfo/:room', async (req, res) => {
+    const requestTime = (new Date()).getTime()
     const room = await Rooms.findOne({
         room_number: req.params.room
     }).exec()
@@ -314,7 +315,8 @@ server.get('/roomInfo/:room', async (req, res) => {
         res.status(200).send({
             "timeCreated": room.timeCreated,
             "owner": room_owner.name,
-            "users": users
+            "users": users,
+            "requestTime": requestTime
         })
     } else {
         res.status(404).send()
@@ -491,6 +493,7 @@ server.post('/createProgrammingRecord', async (req, res) => {
 
 // GET /getProgrammingRecords/:roomNumber/:round
 server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
+    const requestTime = (new Date()).getTime()
     const room = await Rooms.findOne({
         room_number: req.params.roomNumber
     }).exec()
@@ -507,8 +510,8 @@ server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
         }
         const usersArray = Array.from(users)
 
+        res.status(200).send({"users":usersArray,"requestTime":requestTime})
 
-        res.status(200).send(usersArray)
     } else {
         res.status(404).send()
     }

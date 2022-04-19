@@ -11,7 +11,7 @@
 | Room Endpoints | Description | Response | 
 | --- | --- |  --- |
 |``POST /createRoom/[username]/[map_name]``  | Creates a room | ``status 200`` - room created successfuly => response body contains code of the new room <br> ``status 404`` - user not found <br>``status 400`` -  User already in a room |
-|``GET /roomInfo/[room_number]``          | List of players in a room | ``status 404`` - room not found <br>  ``status 200`` - response body contains the list of players in the room and the time room was created | 
+|``GET /roomInfo/[room_number]``          | List of players in a room | ``status 404`` - room not found <br>  ``status 200`` - response body contains the list of players in the room, the time room was created and the time the request was made| 
 |``DELETE /deleteRoom/[room_number]``              | Deletes a room |  ``status 404`` - room not found <br> ``status 200`` - deletes the room|
 
 
@@ -27,5 +27,5 @@
 
 | ProgrammingRecord Enpoints | Description | Response |
 | --- | --- | --- |
-| ``GET /getProgrammingRecords/:roomNumber/:round`` | All players playing in a room in a certain round | ``status 200`` - list of player names returned <br> ``status 404`` - room not found |
+| ``GET /getProgrammingRecords/:roomNumber/:round`` | All players playing in a room in a certain round | ``status 200`` - list of player names returned and the request time <br> ``status 404`` - room not found |
 | ``POST /createProgrammingRecord`` request body contains: username, roomNumber, round, register1, register2, register3, register4, register5 | Creates a new programming record in a specific room in a specific round | ``status 200`` - record created <br> ``status 400`` - user not found <br> ``status 401`` - room not found <br> ``status 402`` - user not joined the room | 
