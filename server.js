@@ -315,7 +315,7 @@ server.get('/roomInfo/:room', async (req, res) => {
 
             res.status(200).send({
                 "timeCreated": room.timeCreated,
-                "owner": room_owner.name ? room_owner.name : "",
+                "owner": room_owner ? room_owner.name : "",
                 "users": users,
                 "requestTime": requestTime
             })
