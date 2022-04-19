@@ -312,17 +312,13 @@ server.get('/roomInfo/:room', async (req, res) => {
             return user.name
         })
         const room_owner = await Users.findById(room.owner).exec()
-        if (room_owner) {
 
             res.status(200).send({
                 "timeCreated": room.timeCreated,
-                "owner": room_owner.name,
+                "owner": room_owner.name ? room_owner.name : "",
                 "users": users,
                 "requestTime": requestTime
             })
-        } else {
-            res.status(401).send()
-        }
     } else {
         res.status(404).send()
     }
