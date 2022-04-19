@@ -25,7 +25,7 @@ var roomSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: "Users"
     },
-    timeCreated: Date,
+    status: String
 }, {
     collection: "Rooms"
 })
@@ -220,8 +220,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
                 room_number: room_number,
                 map: req.params.map,
                 owner: user._id,
-                // current timestamp
-                timeCreated: (new Date()).getTime()
+                status: "WAITING"
             })
             // add user to room
             if (!user.room) {
@@ -248,7 +247,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
                 room_number: room_number,
                 map: req.params.map,
                 owner: user._id,
-                timeCreated: date.getTime()
+                status: "WAITING"
             })
 
             Rooms.create(newRoom)
@@ -271,6 +270,27 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
 
     } else {
         res.status(404).send()
+    }
+
+})
+
+
+server.put('/updateStatus/:room/:status', async (req, res) => {
+
+    const room = await Rooms.findOne({
+        room_number: req.params.room
+    }).exec()
+    if (room) {
+        await Rooms.updateOne({
+            room_number: req.params.room
+        }, {
+            $set: {
+                status: req.params.status
+            }
+        }).exec()
+        res.status(200).send()
+    } else {
+        res.status(404).send() // room not found
     }
 
 })
@@ -313,12 +333,13 @@ server.get('/roomInfo/:room', async (req, res) => {
         })
         const room_owner = await Users.findById(room.owner).exec()
 
-            res.status(200).send({
-                "timeCreated": room.timeCreated,
-                "owner": room_owner ? room_owner.name : "",
-                "users": users,
-                "requestTime": requestTime
-            })
+        res.status(200).send({
+            "owner": room_owner ? room_owner.name : "",
+            "users": users,
+            "map": room.map,
+            "status": room.status,
+            "requestTime": requestTime
+        })
     } else {
         res.status(404).send()
     }
