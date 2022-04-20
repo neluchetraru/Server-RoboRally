@@ -542,7 +542,7 @@ server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
             })
         }
 
-        res.status(200).send(response)
+        res.status(200).send({response})
 
     } else {
         res.status(404).send()
