@@ -337,7 +337,7 @@ server.get('/roomInfo/:room', async (req, res) => {
             "owner": room_owner ? room_owner.name : "",
             "users": users,
             "map": room.map,
-            "gameStatus": room.status,
+            "gameStatus": room.gameStatus,
             "requestTime": requestTime
         })
     } else {
