@@ -220,7 +220,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
                 room_number: room_number,
                 map: req.params.map,
                 owner: user._id,
-                status: "WAITING"
+                gameStatus: "WAITING"
             })
             // add user to room
             if (!user.room) {
@@ -247,7 +247,7 @@ server.post('/createRoom/:owner/:map', async (req, res) => {
                 room_number: room_number,
                 map: req.params.map,
                 owner: user._id,
-                status: "WAITING"
+                gameStatus: "WAITING"
             })
 
             Rooms.create(newRoom)
@@ -285,7 +285,7 @@ server.put('/updateStatus/:room/:status', async (req, res) => {
             room_number: req.params.room
         }, {
             $set: {
-                status: req.params.status
+                gameStatus: req.params.status
             }
         }).exec()
         res.status(200).send()
