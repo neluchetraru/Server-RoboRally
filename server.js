@@ -480,6 +480,7 @@ server.put('/updateRobotDirection/:user/:direction', async (req, res) => {
 // Programming record 
 // POST /createProgrammingRecord 
 server.post('/createProgrammingRecord', async (req, res) => {
+    console.log(req.body)
     const user = await Users.findOne({
         name: req.body.username
     }).exec()
