@@ -487,6 +487,8 @@ server.post('/createProgrammingRecord', async (req, res) => {
     const room = await Rooms.findOne({
         room_number: req.body.roomNumber
     }).exec()
+
+    console.log(req.body)
     if (user) {
         if (room) {
             if (user.room) {
