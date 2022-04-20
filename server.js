@@ -25,7 +25,7 @@ var roomSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: "Users"
     },
-    status: String
+    gameStatus: String
 }, {
     collection: "Rooms"
 })
@@ -337,7 +337,7 @@ server.get('/roomInfo/:room', async (req, res) => {
             "owner": room_owner ? room_owner.name : "",
             "users": users,
             "map": room.map,
-            "status": room.status,
+            "gameStatus": room.status,
             "requestTime": requestTime
         })
     } else {
