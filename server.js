@@ -487,8 +487,6 @@ server.post('/createProgrammingRecord', async (req, res) => {
     const room = await Rooms.findOne({
         room_number: req.body.roomNumber
     }).exec()
-
-    console.log(req.body)
     if (user) {
         if (room) {
             if (user.room) {
@@ -532,16 +530,19 @@ server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
             const user = await Users.findOne({
                 _id: records[i].user
             }).exec()
-            response.push({
-                "username": user.name,
-                "register1": records[i].register1,
-                "register2": records[i].register2,
-                "register3": records[i].register3,
-                "register4": records[i].register4,
-                "register5": records[i].register5,
-                "round": records[i].round,
-                "requestTime": requestTime
-            })
+            if (user){
+                response.push({
+                    "username": user.name,
+                    "register1": records[i].register1,
+                    "register2": records[i].register2,
+                    "register3": records[i].register3,
+                    "register4": records[i].register4,
+                    "register5": records[i].register5,
+                    "round": records[i].round,
+                    "requestTime": requestTime
+                })
+            }
+            
         }
 
         res.status(200).send({response})
