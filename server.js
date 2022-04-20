@@ -520,22 +520,29 @@ server.get('/getProgrammingRecords/:roomNumber/:round', async (req, res) => {
         room_number: req.params.roomNumber
     }).exec()
     if (room) {
-        const users = new Set()
+        // const users = new Set()
         const records = await ProgrammingRecords.find({
             room: room._id,
             round: req.params.round
         }).exec()
+        const response = []
         for (let i = 0; i < records.length; i++) {
-            users.add((await Users.findOne({
+            const user = await Users.findOne({
                 _id: records[i].user
-            }).exec()).name)
+            }).exec()
+            response.push({
+                "username": user.name,
+                "register1": records[i].register1,
+                "register2": records[i].register2,
+                "register3": records[i].register3,
+                "register4": records[i].register4,
+                "register5": records[i].register5,
+                "round": records[i].round,
+                "requestTime": requestTime
+            })
         }
-        const usersArray = Array.from(users)
 
-        res.status(200).send({
-            "users": usersArray,
-            "requestTime": requestTime
-        })
+        res.status(200).send(response)
 
     } else {
         res.status(404).send()
