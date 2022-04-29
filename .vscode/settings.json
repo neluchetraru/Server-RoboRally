@@ -1,8 +1,0 @@
-{
-    "appService.zipIgnorePattern": [
-        "node_modules{,/**}",
-        ".vscode{,/**}"
-    ],
-    "appService.defaultWebAppToDeploy": "/subscriptions/69f98ec4-62e6-4dee-b636-db9982dc75b1/resourceGroups/cloud-shell-storage-westeurope/providers/Microsoft.Web/sites/roborallyserver",
-    "appService.deploySubpath": "."
-}
