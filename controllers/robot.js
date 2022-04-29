@@ -2,7 +2,7 @@ const express = require('express');
 const {
     Users,
     Robots
-} = require('../dbConnection');
+} = require('./dbConnection');
 
 const router = express.Router();
 router.delete("/deleteRobot/:username", async (req, res) => {

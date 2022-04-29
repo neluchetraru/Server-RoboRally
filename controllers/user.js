@@ -3,7 +3,7 @@ const {
     Users,
     Rooms,
     Robots
-} = require('../dbConnection');
+} = require('./dbConnection');
 
 const router = express.Router();
 
