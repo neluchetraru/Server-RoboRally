@@ -2,7 +2,8 @@ const express = require('express');
 const {
     Users,
     Rooms,
-    Robots
+    Robots,
+    ProgrammingRecords
 } = require('./dbConnection');
 
 const router = express.Router();
