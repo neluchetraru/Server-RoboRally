@@ -1,5 +1,8 @@
 # API server for RoboRally Java Game Agile course
 
+This repository serves as the server for the Java game _RoboRally_: https://github.com/JiananAlvin/02160_roborally
+
+
 | User Endpoints                                   | Description |  Response |
 | -------------------------------------------| ---------| --- |
 | ``POST /createUser/[username]``            | Creates a user | ``status 400`` - user already exists <br> ``status 200`` - user created successfully |
